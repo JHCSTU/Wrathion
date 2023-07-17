@@ -107,5 +107,16 @@ namespace Wrathion
             text = obj["data"]?["progressPet"]?.ToString();
             return Convert.ToInt32(text);
         }
+
+        public static string GetProjectId()
+        {
+            var url = "https://weiban.mycourse.cn/pharos/index/listMyProject.do";
+            var data = GenerateData("tenantCode", "userId");
+            //Todo 2为未完成 1为已完成
+            data.Add("ended", "1");
+            var text = Requests.Post(url, data);
+            var obj = JObject.Parse(text);
+            return obj["data"]?[0]?["projectId"]?.ToString();
+        }
     }
 }

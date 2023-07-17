@@ -43,10 +43,8 @@ namespace Wrathion
         private void ReciveMsg(object sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
             var data = JObject.Parse(args.TryGetWebMessageAsString());
-            var index = 0;
             foreach (var item in data)
             {
-                index++;
                 if (item.Key == "token")
                 {
                     if (item.Value != null)
@@ -57,11 +55,9 @@ namespace Wrathion
                     if (item.Value != null) Requests.SetValue(item.Key, item.Value.ToString());
                 }
             }
-
-            if (index == 4)
-            {
-                this.Close();
-            }
+            
+            Requests.SetValue("userProjectId", Requests.GetProjectId());
+            Close();
         }
     }
 }
