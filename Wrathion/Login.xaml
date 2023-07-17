@@ -10,6 +10,7 @@
     <Grid>
         <DockPanel>
             <wv2:WebView2 Name="webView"
+                          SourceChanged="WebView_OnSourceChanged"
                           Source="https://weiban.mycourse.cn/#/login" />
         </DockPanel>
     </Grid>

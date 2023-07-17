@@ -23,7 +23,7 @@ namespace Wrathion
             
             var loginView = new Login();
             loginView.Show();
-            Requests.GetProgress();
+            // Requests.GetProgress();
         }
         
     }
