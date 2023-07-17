@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Windows;
 using Newtonsoft.Json.Linq;
 
 namespace Wrathion
@@ -11,15 +10,31 @@ namespace Wrathion
     public class Requests
     {
         private static Dictionary<string, string> ReqHeader = new Dictionary<string, string>();
+        private static Dictionary<string, string> DataList = new Dictionary<string, string>();
+
+        public static void SetValue(string key, string value)
+        {
+            DataList[key] = value;
+        }
+
+        public static string GetValue(string key)
+        {
+            return DataList[key];
+        }
 
         public static void SetHeader(string key, string value)
         {
-            ReqHeader.Add(key, value);
+            ReqHeader[key] = value;
+        }
+
+        public static string GetHeader(string key)
+        {
+            return ReqHeader[key];
         }
 
         public static string Post(string url, Dictionary<string, string> dataDic = null)
         {
-            string result = "";
+            string result = null;
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             //配置默认参数
             req.Method = "POST";
@@ -56,26 +71,40 @@ namespace Wrathion
             reqStream.Close();
             HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
             Stream stream = resp.GetResponseStream();
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                result = reader.ReadToEnd();
-            }
+            if (stream != null)
+                using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+                {
+                    result = reader.ReadToEnd();
+                }
 
             return result;
         }
 
-        public static int getProgress()
+        //根据所需Key 生成请求数据
+        public static Dictionary<string, string> GenerateData(params string[] keys)
+        {
+            var data = new Dictionary<string, string>();
+            foreach (var item in keys)
+            {
+                data.Add(item, GetValue(item));
+            }
+
+            return data;
+        }
+
+        public static int GetProgress()
         {
             var url = "https://weiban.mycourse.cn/pharos/project/showProgress.do";
-            var data = new Dictionary<string, string>()
-            {
-                { "userProjectId", "89fcaf08-d3a0-4277-85a8-95521beffa36" },
-                { "tenantCode", "32101701" },
-                { "userId", "fcf3c3c2-2569-4bc1-b36c-93b9e9c0466f" },
-            };
+            var data = GenerateData("userProjectId", "tenantCode", "userId");
+            // var data2 = new Dictionary<string, string>()
+            // {
+            //     { "userProjectId", GetValue("userProjectId") },
+            //     { "tenantCode", GetValue("tenantCode") },
+            //     { "userId", GetValue("userId") },
+            // };
             var text = Requests.Post(url, data);
             var obj = JObject.Parse(text);
-            text = obj["data"]["progressPet"].ToString();
+            text = obj["data"]?["progressPet"]?.ToString();
             return Convert.ToInt32(text);
         }
     }
