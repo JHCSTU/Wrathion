@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Navigation;
 using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json.Linq;
 
 namespace Wrathion
 {
@@ -41,7 +42,26 @@ namespace Wrathion
 
         private void ReciveMsg(object sender, CoreWebView2WebMessageReceivedEventArgs args)
         {
-            MessageBox.Show(args.TryGetWebMessageAsString());
+            var data = JObject.Parse(args.TryGetWebMessageAsString());
+            var index = 0;
+            foreach (var item in data)
+            {
+                index++;
+                if (item.Key == "token")
+                {
+                    if (item.Value != null)
+                        Requests.SetHeader("X-Token", item.Value.ToString());
+                }
+                else
+                {
+                    if (item.Value != null) Requests.SetValue(item.Key, item.Value.ToString());
+                }
+            }
+
+            if (index == 4)
+            {
+                this.Close();
+            }
         }
     }
 }
