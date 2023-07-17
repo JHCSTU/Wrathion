@@ -125,9 +125,35 @@ namespace Wrathion
             return obj["data"]?[0]?["userProjectId"]?.ToString();
         }
 
+        public static List<string> GetCategory()
+        {
+            var r = new List<string>();
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/listCategory.do";
+            var data = new Dictionary<string, string>()
+            {
+                { "userId", GetValue("userId") },
+                { "tenantCode", GetValue("tenantCode") },
+                { "chooseType", "3" },
+                { "userProjectId", GetValue("userProjectId") }
+            };
+            var text = Post(url, data);
+            var obj = JObject.Parse(text)["data"];
+            MessageBox.Show(obj.ToString());
+            foreach (var item in obj)
+            {
+                var totalNum =  Convert.ToInt32(item["totalNum"]);
+                var finishedNum = Convert.ToInt32(item["finishedNum"]);
+                if (totalNum - finishedNum > 0)
+                {
+                    r.Add(item["resourceId"]?.ToString());
+                }
+            }
+            return r;
+        }
+
         public static void test()
         {
-            MessageBox.Show(GetProgress().ToString());
+            GetCategory();
         }
     }
 }
