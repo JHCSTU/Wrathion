@@ -129,7 +129,7 @@ namespace Wrathion
         {
             var url = "https://weiban.mycourse.cn/pharos/usercourse/listCourse.do";
             var result = new List<string>();
-            foreach (var code in GetCategory())
+            foreach (var code in GetCategoryList())
             {
                 var data = new Dictionary<string, string>()
                 {
@@ -159,7 +159,7 @@ namespace Wrathion
         {
             var url = "https://weiban.mycourse.cn/pharos/usercourse/listCourse.do";
             var result = new Dictionary<string, string>();
-            foreach (var code in GetCategory())
+            foreach (var code in GetCategoryList())
             {
                 var data = new Dictionary<string, string>()
                 {
@@ -185,7 +185,7 @@ namespace Wrathion
             return result;
         }
 
-        public static List<string> GetCategory()
+        static JToken GetCategory()
         {
             var r = new List<string>();
             var url = "https://weiban.mycourse.cn/pharos/usercourse/listCategory.do";
@@ -198,7 +198,13 @@ namespace Wrathion
             };
             var text = Post(url, data);
             var obj = JObject.Parse(text)["data"];
-            foreach (var item in obj)
+            return obj;
+        }
+
+        public static List<string> GetCategoryList()
+        {
+            var r = new List<string>();
+            foreach (var item in GetCategory())
             {
                 var totalNum = Convert.ToInt32(item["totalNum"]);
                 var finishedNum = Convert.ToInt32(item["finishedNum"]);
