@@ -125,6 +125,36 @@ namespace Wrathion
             return obj["data"]?[0]?["userProjectId"]?.ToString();
         }
 
+        public static List<string> GetCourse()
+        {
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/listCourse.do";
+            var result = new List<string>();
+            foreach (var code in GetCategory())
+            {
+                var data = new Dictionary<string, string>()
+                {
+                    { "userId", GetValue("userId") },
+                    { "tenantCode", GetValue("tenantCode") },
+                    { "chooseType", "3" },
+                    { "userProjectId", GetValue("userProjectId") },
+                    { "name", "" },
+                    { "categoryCode", code }
+                };
+                var text = Post(url, data);
+                var obj = JObject.Parse(text)["data"];
+                foreach (var item in obj)
+                {
+                    //Todo Publish == 2
+                    if (Convert.ToInt32(item["finished"]) != 2)
+                    {
+                        result.Add(item["resourceId"]?.ToString());
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public static List<string> GetCategory()
         {
             var r = new List<string>();
@@ -140,7 +170,7 @@ namespace Wrathion
             var obj = JObject.Parse(text)["data"];
             foreach (var item in obj)
             {
-                var totalNum =  Convert.ToInt32(item["totalNum"]);
+                var totalNum = Convert.ToInt32(item["totalNum"]);
                 var finishedNum = Convert.ToInt32(item["finishedNum"]);
                 //Todo Publish is > 0
                 if (totalNum - finishedNum == 0)
@@ -148,12 +178,12 @@ namespace Wrathion
                     r.Add(item["categoryCode"]?.ToString());
                 }
             }
+
             return r;
         }
-        
+
         public static void test()
         {
-            
         }
     }
 }
