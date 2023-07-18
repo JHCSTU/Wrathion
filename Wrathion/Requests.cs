@@ -155,6 +155,36 @@ namespace Wrathion
             return result;
         }
 
+        public static Dictionary<string, string> GetFinishIdList()
+        {
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/listCourse.do";
+            var result = new Dictionary<string, string>();
+            foreach (var code in GetCategory())
+            {
+                var data = new Dictionary<string, string>()
+                {
+                    { "userId", GetValue("userId") },
+                    { "tenantCode", GetValue("tenantCode") },
+                    { "chooseType", "3" },
+                    { "userProjectId", GetValue("userProjectId") },
+                    { "name", "" },
+                    { "categoryCode", code }
+                };
+                var text = Post(url, data);
+                var obj = JObject.Parse(text)["data"];
+                foreach (var item in obj)
+                {
+                    //Todo Publish == 2
+                    if (Convert.ToInt32(item["finished"]) != 2)
+                    {
+                        result.Add(item["resourceId"]?.ToString() ?? string.Empty, item["userCourseId"]?.ToString());
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public static List<string> GetCategory()
         {
             var r = new List<string>();
