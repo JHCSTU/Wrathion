@@ -125,10 +125,19 @@ namespace Wrathion
             return obj["data"]?[0]?["userProjectId"]?.ToString();
         }
 
-        public static List<string> GetFinishIdList()
+        public static List<string> GetCategory()
         {
-            var obj = GetCategory();
             var r = new List<string>();
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/listCategory.do";
+            var data = new Dictionary<string, string>()
+            {
+                { "userId", GetValue("userId") },
+                { "tenantCode", GetValue("tenantCode") },
+                { "chooseType", "3" },
+                { "userProjectId", GetValue("userProjectId") }
+            };
+            var text = Post(url, data);
+            var obj = JObject.Parse(text)["data"];
             foreach (var item in obj)
             {
                 var totalNum =  Convert.ToInt32(item["totalNum"]);
@@ -140,20 +149,6 @@ namespace Wrathion
                 }
             }
             return r;
-        }
-        public static JToken GetCategory()
-        {
-            var url = "https://weiban.mycourse.cn/pharos/usercourse/listCategory.do";
-            var data = new Dictionary<string, string>()
-            {
-                { "userId", GetValue("userId") },
-                { "tenantCode", GetValue("tenantCode") },
-                { "chooseType", "3" },
-                { "userProjectId", GetValue("userProjectId") }
-            };
-            var text = Post(url, data);
-            var obj = JObject.Parse(text)["data"];
-            return obj;
         }
         
         public static void test()
