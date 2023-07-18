@@ -138,22 +138,22 @@ namespace Wrathion
             };
             var text = Post(url, data);
             var obj = JObject.Parse(text)["data"];
-            MessageBox.Show(obj.ToString());
             foreach (var item in obj)
             {
                 var totalNum =  Convert.ToInt32(item["totalNum"]);
                 var finishedNum = Convert.ToInt32(item["finishedNum"]);
-                if (totalNum - finishedNum > 0)
+                //Todo Publish is > 0
+                if (totalNum - finishedNum == 0)
                 {
-                    r.Add(item["resourceId"]?.ToString());
+                    r.Add(item["categoryCode"]?.ToString());
                 }
             }
             return r;
         }
-
+        
         public static void test()
         {
-            GetCategory();
+            
         }
     }
 }
