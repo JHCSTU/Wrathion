@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using Newtonsoft.Json.Linq;
 
@@ -118,7 +119,6 @@ namespace Wrathion
                 { "userId", GetValue("userId") },
                 { "tenantCode", GetValue("tenantCode") }
             };
-            //Todo 2为未完成 1为已完成
             data.Add("ended", "1");
             var text = Requests.Post(url, data);
             var obj = JObject.Parse(text);
@@ -145,7 +145,7 @@ namespace Wrathion
                 foreach (var item in obj)
                 {
                     //Todo Publish == 2
-                    if (Convert.ToInt32(item["finished"]) != 2)
+                    if (Convert.ToInt32(item["finished"]) == 2)
                     {
                         result.Add(item["resourceId"]?.ToString());
                     }
@@ -175,7 +175,7 @@ namespace Wrathion
                 foreach (var item in obj)
                 {
                     //Todo Publish == 2
-                    if (Convert.ToInt32(item["finished"]) != 2)
+                    if (Convert.ToInt32(item["finished"]) == 2)
                     {
                         result.Add(item["resourceId"]?.ToString() ?? string.Empty, item["userCourseId"]?.ToString());
                     }
@@ -208,7 +208,6 @@ namespace Wrathion
             {
                 var totalNum = Convert.ToInt32(item["totalNum"]);
                 var finishedNum = Convert.ToInt32(item["finishedNum"]);
-                //Todo Publish is > 0
                 if (totalNum - finishedNum == 0)
                 {
                     r.Add(item["categoryCode"]?.ToString());
@@ -245,8 +244,25 @@ namespace Wrathion
             Post(url, data);
         }
 
-        public static void test()
+        public static void Run()
         {
+            //Main 
+            var finishIdList = Requests.GetFinishIdList();
+            var courseList = Requests.GetCourse();
+            for (int i = 0; i < courseList.Count; i++)
+            {
+                // Judge the state
+                while (Requests.Start(courseList[i]) == false)
+                {
+                    //Sleep
+                    Thread.Sleep(5000);
+                }
+
+                //Wait to Vert
+                Thread.Sleep(20000);
+                //Send Finish Data
+                Requests.Finish(finishIdList[courseList[i]]);
+            }
         }
     }
 }
