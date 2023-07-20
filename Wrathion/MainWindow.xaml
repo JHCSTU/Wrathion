@@ -5,8 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wrathion"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="安全微办助手  作者:Coaixy" Height="350" Width="525">
     <Grid>
-        
+        <Image Name="Image" HorizontalAlignment="Center" Height="300"></Image>
+        <Label HorizontalAlignment="Center" FontSize="20" Name="Label">当前状态</Label>
     </Grid>
 </Window>
