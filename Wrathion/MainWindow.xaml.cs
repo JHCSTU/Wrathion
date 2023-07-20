@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using Newtonsoft.Json.Linq;
 
 namespace Wrathion
@@ -10,21 +12,24 @@ namespace Wrathion
     /// </summary>
     public partial class MainWindow
     {
-        private void initData()
-        {
-            Requests.SetValue("userProjectId","");
-            Requests.SetValue("tenantCode","");
-            Requests.SetValue("userId","");
-        }
+        // Test 
+        // private void initData()
+        // {
+        //     Requests.SetHeader("X-Token", "");
+        //     Requests.SetValue("userProjectId", "");
+        //     Requests.SetValue("tenantCode", "");
+        //     Requests.SetValue("userId", "");
+        // }
+
         public MainWindow()
         {
             InitializeComponent();
-            initData();
-            
-            var loginView = new Login();
-            loginView.Show();
-            // Requests.GetProgress();
+            // Show Login Form to Load Data
+            var l = new Login();
+            l.Show();
+            // Load Internet Img
+            Image.Source = BitmapFrame.Create(new Uri("https://jcdn.lawliet.ren/qrcode.jpg", false),
+                BitmapCreateOptions.None, BitmapCacheOption.Default);
         }
-        
     }
 }
