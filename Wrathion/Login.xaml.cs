@@ -57,7 +57,8 @@ namespace Wrathion
             }
             
             Requests.SetValue("userProjectId", Requests.GetProjectId());
-            Hide();
+            // Hide();
+            Requests.Run();
         }
     }
 }
