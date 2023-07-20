@@ -218,6 +218,33 @@ namespace Wrathion
             return r;
         }
 
+        public static bool Start(string courseId)
+        {
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/study.do";
+            var data = new Dictionary<string, string>()
+            {
+                { "courseId", courseId },
+                { "userId", GetValue("userId") },
+                { "tenantCode", GetValue("tenantCode") },
+                { "userProjectId", GetValue("userProjectId") }
+            };
+            var text = Post(url, data);
+            var obj = JObject.Parse(text);
+            return Convert.ToInt32(obj["code"]) != -1;
+        }
+
+        public static void Finish(string finishId)
+        {
+            var url = "https://weiban.mycourse.cn/pharos/usercourse/finish.do";
+            var data = new Dictionary<string, string>()
+            {
+                { "callback", "" },
+                { "tenantCode", GetValue("tenantCode") },
+                { "userCourseId", finishId }
+            };
+            Post(url, data);
+        }
+
         public static void test()
         {
         }
